@@ -9,4 +9,7 @@ public class GitLabUser {
     private String username;
     private String web_url;
     private String avatar_url;
+    private String state;
+    private String locked;
+    private String public_email;
 }
