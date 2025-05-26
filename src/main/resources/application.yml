@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: easyhire-onboarding
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: easyhire
+
+easyhire:
+  platforms:
+    stackoverflow:
+      base-url: https://api.stackexchange.com/2.3/users/
