@@ -44,7 +44,7 @@ public class GitLabController {
             Path zipPath = gitLabService.downloadUserRepositoriesAsZip(userName);
             Map<String, String> response = Map.of(
                     "status", "success",
-                    "zipPath", zipPath.toAbsolutePath().toString()
+                    "zipPath", zipPath != null ? zipPath.toAbsolutePath().toString() : "No projects found"
             );
             return ResponseEntity.ok(response);
         } catch (Exception e) {

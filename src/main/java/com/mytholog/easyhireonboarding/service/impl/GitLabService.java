@@ -41,6 +41,10 @@ public class GitLabService {
 
     public Path downloadUserRepositoriesAsZip(String username) throws IOException {
         List<GitLabProject> projects = gitLabClient.getUserProjects(username);
+        if (projects.isEmpty()) {
+            log.warn("No projects found for username {}", username);
+            return null;
+        }
 
         //path where file will be stored locally
         Path outputDir = Paths.get("downloads");
