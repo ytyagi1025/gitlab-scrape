@@ -78,7 +78,7 @@ public class GitLabService {
                 } else {
                     log.warn("Skipping project {} due to download failure.", project.getName());
                 }
-                //break; // this is for testing locally and will be removed
+                break; // this is for testing locally and will be removed
             }
         }
 

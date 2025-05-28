@@ -1,12 +1,27 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: <CLIENT_ID>
+            client-secret: <SECRET_KEY>
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
   application:
     name: easyhire-onboarding
-
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: easyhire
+          host: localhost
+          port: 27017
+          database: easyhire
 
 easyhire:
   platforms:
