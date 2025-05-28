@@ -3,7 +3,9 @@ package com.mytholog.easyhireonboarding.controller;
 
 import com.mytholog.easyhireonboarding.model.GitLabUser;
 import com.mytholog.easyhireonboarding.repository.UserClient;
+import com.mytholog.easyhireonboarding.service.S3Uploader;
 import com.mytholog.easyhireonboarding.service.impl.GitLabService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +24,15 @@ public class GitLabController {
 
     private final UserClient gitLabClient;
     private final GitLabService gitLabService;
+    private final S3Uploader uploaderService;
 
-    public GitLabController(UserClient gitLabClient, GitLabService gitLabService) {
+    @Value("${save.to.s3}")
+    private boolean uploadToS3Bucket;
+
+    public GitLabController(UserClient gitLabClient, GitLabService gitLabService, S3Uploader uploaderService) {
         this.gitLabClient = gitLabClient;
         this.gitLabService = gitLabService;
+        this.uploaderService = uploaderService;
     }
 
     @GetMapping("/user")
@@ -41,11 +48,18 @@ public class GitLabController {
     @GetMapping("/download")
     public ResponseEntity<Map<String, String>> downloadProjects(@RequestParam String userName) {
         try {
-            Path zipPath = gitLabService.downloadUserRepositoriesAsZip(userName);
+            String path = null;
+            if (uploadToS3Bucket) {
+                path = gitLabService.downloadUserRepositoriesAsZip(userName);
+            } else {
+                path = gitLabService.downloadUserRepositoriesAsZipLocally(userName);
+            }
+
             Map<String, String> response = Map.of(
                     "status", "success",
-                    "zipPath", zipPath != null ? zipPath.toAbsolutePath().toString() : "No projects found"
+                    "zipPath", path != null ? path : "No projects found"
             );
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
